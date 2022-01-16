@@ -57,8 +57,9 @@ class ViewController: UIViewController, ARSKViewDelegate, ARSessionObserver {
         boxNode.verticalAlignmentMode = .center
         boxNode.horizontalAlignmentMode = .center
         boxNode.zPosition = 100
-        boxNode.setScale(1.5)
+        boxNode.setScale(0)
         spawnNode.addChild(boxNode)
+        boxNode.run(SKAction.sequence([Actions.startSoundAction, Actions.scaleInAction]))
         return spawnNode
     }
     
@@ -109,4 +110,6 @@ class ViewController: UIViewController, ARSKViewDelegate, ARSessionObserver {
             break
         }
     }
+
+   
 }

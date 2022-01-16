@@ -20,7 +20,10 @@ class Scene: SKScene {
     var spawnTime: TimeInterval = 0
     var score: Int = 0
     var lives: Int = 10
-    
+
+
+
+
     override func didMove(to view: SKView) {
         startGame()
     }
@@ -47,7 +50,7 @@ class Scene: SKScene {
             addAnchor()
             break
         case .Playing:
-//            checkTouches(touches)
+            checkTouches(touches)
             break
         case .GameOver:
             startGame()
@@ -116,9 +119,41 @@ class Scene: SKScene {
         emojiNode.physicsBody?.mass = 0.01
         emojiNode.physicsBody?.applyImpulse(CGVector(dx: -5 + 10 * randomCGFloat(), dy: 10))
         emojiNode.physicsBody?.applyTorque(-0.2 + 0.4 * randomCGFloat())
+
+        let runAction = SKAction.run {
+            self.lives -= 1
+            if self.lives <= 0 {
+                self.stopGame()
+            }
+        }
+
+         let sequenceAction = SKAction.sequence([
+            Actions.spawnSoundAction, Actions.waitAction, Actions.dieSoundAction, runAction, Actions.removeAction
+        ])
+
+        emojiNode.run(sequenceAction)
+
+    }
+
+    func checkTouches(_ touch: Set<UITouch>) {
+        guard let touch = touch.first else { return }
+        let touchLocation = touch.location(in: self)
+        let touchedNode = self.atPoint(touchLocation)
+
+        if touchedNode.name != "Emoji" { return }
+        let sequenceAction = SKAction.sequence([
+            Actions.collectionSoundAction, Actions.removeAction
+        ])
+        touchedNode.run(sequenceAction)
     }
 
     func randomCGFloat() -> CGFloat {
         return CGFloat(Float.random(in: 0.0...1.0))
     }
+
+
+
+
+
+
 }

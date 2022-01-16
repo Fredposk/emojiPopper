@@ -27,6 +27,14 @@ class Scene: SKScene {
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+        if gameState != .Playing { return }
+
+        if spawnTime == 0 { spawnTime = currentTime + 3 }
+        if spawnTime < currentTime {
+            spawnEmoji()
+            spawnTime = currentTime + 0.5
+        }
+        updateHud(with: "SCORE: " + "\(score)" + " | LIVES: " + "\(lives)")
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -93,5 +101,24 @@ class Scene: SKScene {
         if anchor != nil {
             sceneView.session.remove(anchor: anchor!)
         }
+    }
+
+    func spawnEmoji() {
+        let emojiNode = SKLabelNode(text: String(emojis.randomElement()!))
+        emojiNode.name = "Emoji"
+        emojiNode.horizontalAlignmentMode = .center
+        emojiNode.verticalAlignmentMode = .center
+
+        guard let sceneView = self.view as? ARSKView else { return }
+        let spawnNode = sceneView.scene?.childNode(withName: "SpawnPoint")
+        spawnNode?.addChild(emojiNode)
+        emojiNode.physicsBody = SKPhysicsBody(circleOfRadius: 15)
+        emojiNode.physicsBody?.mass = 0.01
+        emojiNode.physicsBody?.applyImpulse(CGVector(dx: -5 + 10 * randomCGFloat(), dy: 10))
+        emojiNode.physicsBody?.applyTorque(-0.2 + 0.4 * randomCGFloat())
+    }
+
+    func randomCGFloat() -> CGFloat {
+        return CGFloat(Float.random(in: 0.0...1.0))
     }
 }

@@ -53,7 +53,7 @@ class ViewController: UIViewController, ARSKViewDelegate, ARSessionObserver {
         // Create and configure a node for the anchor added to the view's session.
         let spawnNode = SKNode()
         spawnNode.name = "SpawnPoint"
-        let boxNode = SKLabelNode(text: "❄️")
+        let boxNode = SKLabelNode(text: "😎")
         boxNode.verticalAlignmentMode = .center
         boxNode.horizontalAlignmentMode = .center
         boxNode.zPosition = 100
@@ -86,11 +86,6 @@ class ViewController: UIViewController, ARSKViewDelegate, ARSessionObserver {
         present(alert, animated: true, completion: nil)
     }
 
-//    func session(session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
-//        switch camera.trackingState {
-//
-//        }
-//    }
 
     func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
         switch camera.trackingState {

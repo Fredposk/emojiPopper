@@ -9,7 +9,7 @@ import UIKit
 import SpriteKit
 import ARKit
 
-class ViewController: UIViewController, ARSKViewDelegate {
+class ViewController: UIViewController, ARSKViewDelegate, ARSessionObserver {
     
     @IBOutlet weak var hudLabel: UILabel!
     @IBOutlet var sceneView: ARSKView!
@@ -69,11 +69,14 @@ class ViewController: UIViewController, ARSKViewDelegate {
     
     func sessionWasInterrupted(_ session: ARSession) {
         // Inform the user that the session has been interrupted, for example, by presenting an overlay
+        showAlert("Session TimeOut", "Session was interrupted")
         
     }
     
     func sessionInterruptionEnded(_ session: ARSession) {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
+        let scene = sceneView.scene as! Scene
+        scene.startGame()
         
     }
 
@@ -83,5 +86,32 @@ class ViewController: UIViewController, ARSKViewDelegate {
         present(alert, animated: true, completion: nil)
     }
 
-    
+//    func session(session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
+//        switch camera.trackingState {
+//
+//        }
+//    }
+
+    func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
+        switch camera.trackingState {
+        case .notAvailable:
+            showAlert("Tracking Limited", "AR not available")
+            break
+        case .limited(let reason):
+            switch reason {
+            case .initializing:
+                break
+            case .excessiveMotion:
+                showAlert("Tracking Limited", "Settle your horses, you're moving too much")
+            case .insufficientFeatures:
+                showAlert("Tracking Limited", "Move to a better location")
+            case .relocalizing:
+                break
+            @unknown default:
+                fatalError()
+            }
+        case .normal:
+            break
+        }
+    }
 }
